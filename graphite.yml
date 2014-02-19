@@ -27,4 +27,6 @@
       nginx_sites: none
     - postgres
     - graphite
+    - nodejs
+    - statsd
 

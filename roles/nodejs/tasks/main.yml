@@ -1,0 +1,7 @@
+- name: test if nodejs is installed
+  shell: /usr/bin/test -n "$(node -v 2> /dev/null)"
+  ignore_errors: True
+  register: node_installed
+
+- include: node.yml
+  when: node_installed.rc == 1
