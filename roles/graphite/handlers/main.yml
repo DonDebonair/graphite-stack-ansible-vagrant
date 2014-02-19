@@ -1,0 +1,5 @@
+- name: reload supervisor
+  shell: supervisorctl reload
+
+- name: restart nginx
+  action: service name=nginx state=restarted

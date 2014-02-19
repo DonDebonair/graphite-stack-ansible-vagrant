@@ -1,0 +1,21 @@
+- name: install python-related packages debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-dev
+    - python-setuptools
+  when: ansible_os_family == "Debian"
+
+- name: install python-related packages redhat/centos
+  yum: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-devel
+    - python-setuptools
+  when: ansible_os_family == "RedHat"
+
+- name: install pip
+  easy_install: name=pip
+
+- name: install virtualenv
+  pip: name=virtualenv

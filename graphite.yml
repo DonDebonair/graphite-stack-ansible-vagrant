@@ -1,0 +1,30 @@
+- hosts: all
+  sudo: True
+  vars:
+    graphite:
+      version: 0.9.12
+      timezone: Europe/Paris
+      workers: 4
+      host: 0.0.0.0
+      server: graphite.local
+      secret_key: 'ob3sow^ik#4q(k5*tgw&6j+osyr^@0jus$yd+-#^&^d#%yim1!'
+    carbon:
+      host: 0.0.0.0
+      ssl: no
+    db:
+      name: graphite
+      user: graphite
+      password: graphite
+    superuser:
+      username: admin
+      email: admin@example.com
+      password: admin
+  roles:
+    - common
+    - python
+    - supervisor
+    - role: nginx
+      nginx_sites: none
+    - postgres
+    - graphite
+

@@ -1,0 +1,1 @@
+Generate a secret key for Django [here](http://www.miniwebtool.com/django-secret-key-generator/)

@@ -1,0 +1,30 @@
+# RedHat has an ancient version of Supervisor in it's distribution repos, so we install it with pip
+- name: install supervisor redhat/centos
+  pip: name=supervisor
+  when: ansible_os_family == "RedHat"
+
+- name: install supervisor debian/ubuntu
+  apt: pkg=supervisor state=latest
+  when: ansible_os_family == "Debian"
+
+- name: ensure supervisor conf.d directory exists
+  file:
+    path: /etc/supervisor/conf.d
+    state: directory
+
+- name: ensure supervisor log directory exists
+  file:
+    path: /var/log/supervisor
+    state: directory
+
+- name: Copy supervisor global configuration
+  copy: src=supervisord.conf dest=/etc/supervisord.conf
+
+- name: Install as service with automatic start on redhat/centos
+  copy: src=supervisor-RedHat dest=/etc/rc.d/init.d/supervisord mode=0755 group=root owner=root
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and run service
+  service: name=supervisord state=started enabled=yes
+  when: ansible_os_family == "RedHat"
+

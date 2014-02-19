@@ -1,0 +1,108 @@
+- name: install required packages for graphite debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - memcached
+    - libcairo2-dev
+    - libffi-dev # for cairocffi
+  when: ansible_os_family == "Debian"
+
+- name: ensure graphite directory exists
+  file:
+    path: /opt/graphite/
+    state: directory
+
+- name: install graphite python deps and create virtualenv if needed
+  pip: name={{ item }} virtualenv=/opt/graphite virtualenv_site_packages=no
+  with_items:
+    - psycopg2
+    - django
+    - django-tagging 
+    - python-memcached 
+    - pytz 
+    - pyparsing
+    - gunicorn
+    - twisted
+    - cairocffi # Drop-in replacement for py2cairo. Can be installed inside virtualenv. See http://stackoverflow.com/questions/11491268/install-pycairo-in-virtualenv
+
+# WHISPER
+
+- name: whisper source
+  get_url: url=https://github.com/graphite-project/whisper/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/whisper-{{ graphite.version }}.tar.gz
+
+- name: unarchive source
+  command: tar -xvzf /opt/graphite/whisper-{{graphite.version}}.tar.gz chdir=/opt/graphite creates=/opt/graphite/whisper-{{ graphite.version }}
+
+- name: install whisper
+  command: ./bin/pip install ./whisper-{{ graphite.version }}/ chdir=/opt/graphite
+
+# CARBON
+
+- name: carbon source
+  get_url: url=https://github.com/graphite-project/carbon/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/carbon-{{ graphite.version }}.tar.gz
+
+- name: unarchive source
+  command: tar -xvzf /opt/graphite/carbon-{{graphite.version}}.tar.gz chdir=/opt/graphite creates=/opt/graphite/carbon-{{ graphite.version }}
+
+- name: install carbon
+  command: ./bin/pip install ./carbon-{{ graphite.version }}/ chdir=/opt/graphite
+
+- name: Configure carbon cache
+  template: src=carbon.conf.j2 dest=/opt/graphite/conf/carbon.conf mode=0644
+
+- name: Configure carbon storage schema
+  template: src=storage-schemas.conf.j2 dest=/opt/graphite/conf/storage-schemas.conf mode=0644
+
+- name: Configure carbon storage aggregation
+  template: src=storage-aggregation.conf.j2 dest=/opt/graphite/conf/storage-aggregation.conf mode=0644
+
+# GRAPHITE WEBAPP
+
+- name: graphite source
+  get_url: url=https://github.com/graphite-project/graphite-web/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/graphite-web-{{ graphite.version }}.tar.gz
+
+- name: unarchive source
+  command: tar -xvzf graphite-web-{{ graphite.version }}.tar.gz chdir=/opt/graphite creates=/opt/graphite/graphite-web-{{ graphite.version }}
+
+- name: install graphite
+  command: ./bin/pip install ./graphite-web-{{ graphite.version }}/ chdir=/opt/graphite
+
+- name: graphite conf
+  template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
+
+- name: syncdb for graphite
+  command: /opt/graphite/bin/python manage.py syncdb --noinput chdir=/opt/graphite/webapp/graphite
+
+- name: graphite log folder
+  file: state=directory path=/opt/graphite/storage/log/webapp
+
+# SUPERVISOR
+
+- name: Copy supervisor configuration for graphite
+  template: src=supervisor-graphite.conf.j2 dest=/etc/supervisor/conf.d/graphite.conf
+  notify: 
+    - reload supervisor
+
+# NGinx
+
+- name: Set file permissions
+  command: /bin/chown -R www-data:www-data /opt/graphite
+
+- name: Copy nginx configuration for graphite
+  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner=www-data group=www-data
+  when: ansible_os_family == "Debian"
+
+- name: Copy nginx configuration for graphite
+  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner=nginx group=nginx
+  when: ansible_os_family == "RedHat"
+
+- name: Link nginx configuration for graphite
+  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link owner=www-data group=www-data
+  when: ansible_os_family == "Debian"
+  notify:
+    - restart nginx
+
+- name: Link nginx configuration for graphite
+  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link owner=nginx group=nginx
+  when: ansible_os_family == "RedHat"
+  notify:
+    - restart nginx
