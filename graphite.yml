@@ -2,7 +2,7 @@
   sudo: True
   vars:
     graphite:
-      version: 0.9.12
+      version: master
       timezone: Europe/Paris
       workers: 4
       host: 0.0.0.0

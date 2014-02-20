@@ -70,7 +70,7 @@
   template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
 
 - name: syncdb for graphite
-  command: /opt/graphite/bin/python manage.py syncdb --noinput chdir=/opt/graphite/webapp/graphite
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py syncdb --noinput --settings=graphite.settings
 
 - name: graphite log folder
   file: state=directory path=/opt/graphite/storage/log/webapp
