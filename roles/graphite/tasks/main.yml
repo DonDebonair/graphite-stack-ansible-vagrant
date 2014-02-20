@@ -1,3 +1,5 @@
+- include_vars: "{{ ansible_os_family }}.yml"
+
 - name: install required packages for graphite debian/ubuntu
   apt: pkg={{ item }} state=latest
   with_items:
@@ -5,6 +7,15 @@
     - libcairo2-dev
     - libffi-dev # for cairocffi
   when: ansible_os_family == "Debian"
+
+- name: install required packages for graphite redhat/centos
+  yum: pkg={{ item }} state=latest
+  with_items:
+    - memcached
+    - cairo-devel
+    - bitmap-fonts
+    - libffi-devel # for cairocffi
+  when: ansible_os_family == "RedHat"
 
 - name: ensure graphite directory exists
   file:
@@ -85,24 +96,12 @@
 # NGinx
 
 - name: Set file permissions
-  command: /bin/chown -R www-data:www-data /opt/graphite
+  command: /bin/chown -R {{ nginx_user }}:{{ nginx_group }} /opt/graphite
 
 - name: Copy nginx configuration for graphite
-  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner=www-data group=www-data
-  when: ansible_os_family == "Debian"
-
-- name: Copy nginx configuration for graphite
-  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner=nginx group=nginx
-  when: ansible_os_family == "RedHat"
+  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner={{ nginx_user }} group={{ nginx_group }}
 
 - name: Link nginx configuration for graphite
-  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link owner=www-data group=www-data
-  when: ansible_os_family == "Debian"
-  notify:
-    - restart nginx
-
-- name: Link nginx configuration for graphite
-  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link owner=nginx group=nginx
-  when: ansible_os_family == "RedHat"
+  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link owner={{ nginx_user }} group={{ nginx_group }}
   notify:
     - restart nginx

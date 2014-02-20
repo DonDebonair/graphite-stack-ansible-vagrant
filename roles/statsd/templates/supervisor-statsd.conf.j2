@@ -1,5 +1,5 @@
 [program:statsd]
-command={{ node_path.stdout }} /opt/statsd/stats.js /opt/statsd/localConfig.js
+command={{ node.path }}/node /opt/statsd/stats.js /opt/statsd/localConfig.js
 process_name=%(program_name)s
 autostart=true
 autorestart=true

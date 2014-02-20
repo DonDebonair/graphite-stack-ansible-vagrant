@@ -9,7 +9,7 @@
   register: node_dir
 
 - name: configure
-  shell: /usr/bin/python ./configure chdir=/tmp/{{ node_dir.stdout }}
+  shell: /usr/bin/python ./configure --prefix={{ node.path }} chdir=/tmp/{{ node_dir.stdout }}
 
 - name: make
   shell: /usr/bin/make chdir=/tmp/{{ node_dir.stdout }}

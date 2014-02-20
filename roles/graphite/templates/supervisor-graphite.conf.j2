@@ -1,10 +1,10 @@
 [program:gunicorn-graphite]
-command=/opt/graphite/bin/gunicorn_django -u www-data -g www-data -b 127.0.0.1:8080 --log-file=/opt/graphite/storage/log/webapp/gunicorn.log /opt/graphite/webapp/graphite/settings.py
+command=/opt/graphite/bin/gunicorn_django -u {{ nginx_user }} -g {{ nginx_user }} -b 127.0.0.1:8080 --log-file=/opt/graphite/storage/log/webapp/gunicorn.log /opt/graphite/webapp/graphite/settings.py
 process_name=%(program_name)s
 autostart=true
 autorestart=true
 stopsignal=QUIT
-user=www-data
+user={{ nginx_user }}
  
 [program:carbon-cache]
 command=/opt/graphite/bin/python /opt/graphite/bin/carbon-cache.py --debug start

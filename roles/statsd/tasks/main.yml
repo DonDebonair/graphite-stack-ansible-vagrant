@@ -4,10 +4,6 @@
 - name: Configure statsd
   template: src=localConfig.js.j2 dest=/opt/statsd/localConfig.js
 
-- name: lookup node path
-  shell: which node
-  register: node_path
-
 - name: Copy supervisor configuration for statsd
   template: src=supervisor-statsd.conf.j2 dest=/etc/supervisor/conf.d/statsd.conf
   notify: 
