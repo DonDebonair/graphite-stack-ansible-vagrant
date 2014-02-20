@@ -19,8 +19,6 @@
       username: admin
       email: admin@example.com
       password: admin
-    node:
-      path: /usr/local/bin
   roles:
     - common
     - python

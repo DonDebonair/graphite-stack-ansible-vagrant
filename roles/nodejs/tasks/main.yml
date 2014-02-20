@@ -1,6 +1,6 @@
-# Check if node is installed somewhere in the path or at the specified location
+# Check if node is installed somewhere in the path or at the default location
 - name: test if nodejs is installed
-  shell: /usr/bin/test -n "$(node -v 2> /dev/null)" -o -n "$({{ node.path }}/node -v 2> /dev/null)"
+  shell: /usr/bin/test -n "$(node -v 2> /dev/null)" -o -n "$(/usr/local/bin/node -v 2> /dev/null)"
   ignore_errors: True
   register: node_installed
 
