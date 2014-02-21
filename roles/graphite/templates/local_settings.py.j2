@@ -164,9 +164,9 @@ DATABASES = {
         # to ``django.db.backends.mysql`` or to PostgreSQL with
         # ``django.db.backends.postgresql_psycopg2``
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '{{ db.name }}',
-        'USER': '{{ db.user }}',
-        'PASSWORD': '{{ db.password }}',
+        'NAME': '{{ db_graphite.name }}',
+        'USER': '{{ db_graphite.user }}',
+        'PASSWORD': '{{ db_graphite.password }}',
         'HOST': 'localhost',
         'PORT': '',
     }

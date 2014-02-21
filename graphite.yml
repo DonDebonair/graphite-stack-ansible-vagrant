@@ -11,14 +11,10 @@
     carbon:
       host: 0.0.0.0
       ssl: no
-    db:
+    db_graphite:
       name: graphite
       user: graphite
       password: graphite
-    superuser:
-      username: admin
-      email: admin@example.com
-      password: admin
   roles:
     - common
     - python
