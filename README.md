@@ -15,7 +15,7 @@ What gets installed:
 	* [The Graphite webapp](https://github.com/graphite-project/graphite-web)
 * StatsD  
 
-## Let's get do this!
+## Let's do this!
 
 If you want to install Graphite on a VM using Vagrant, you first need to install [Vagrant](http://www.vagrantup.com/) and a Virtual Machine provider of choice ([VirtualBox](https://www.virtualbox.org/) is free and works out of the box with Vagrant).
 
