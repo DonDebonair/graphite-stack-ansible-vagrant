@@ -1,5 +1,7 @@
 # Graphite & StatsD with Ansible
 
+NOTE: If you want an even more complete monitoring solution that includes [Sentry](http://getsentry.com), the error logging tool, take a look at [Statserver](https://github.com/DandyDev/statserver)
+
 This playbook makes it really easy to setup [Graphite](http://graphite.readthedocs.org/en/latest/) and [StatsD](https://github.com/etsy/statsd/) on a server (VPS or Dedicated). You can also optionally install it on a Virtual Machine using Vagrant so you can play around with it. It uses [Ansible](http://www.ansible.com/), a great configuration management tool written in Python, to automatically install the applications and all dependencies and configure everything to work optimally.
 
 What gets installed:
