@@ -8,6 +8,10 @@ server {
     # path for static files
     root /opt/graphite/webapp/content;
 
+    location /static {
+      alias /opt/graphite/webapp/content;
+    }
+
     location /media/ {
       # this changes depending on your python version
       root /opt/graphite/lib/python2.7/site-packages/django/contrib/admin;
