@@ -26,7 +26,7 @@
   pip: name={{ item }} virtualenv=/opt/graphite virtualenv_site_packages=no
   with_items:
     - psycopg2
-    - django
+    - django<1.7
     - django-tagging 
     - python-memcached 
     - pytz 
