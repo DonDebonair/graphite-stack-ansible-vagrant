@@ -77,6 +77,11 @@
 - name: install graphite
   command: ./bin/pip install ./graphite-web-{{ graphite.version }}/ chdir=/opt/graphite
 
+- name: graphite folder for local_settings
+  file:
+    path: /opt/graphite/webapp/graphite
+    state: directory
+
 - name: graphite conf
   template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
 
