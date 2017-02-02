@@ -92,7 +92,7 @@
     mode: 644
 
 - name: syncdb for graphite
-  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py syncdb --noinput --settings=graphite.settings
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py syncdb --noinput --settings=graphite.local_settings
 
 - name: graphite log folder
   file: state=directory path=/opt/graphite/storage/log/webapp
