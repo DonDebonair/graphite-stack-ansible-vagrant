@@ -26,8 +26,8 @@
   pip: name={{ item }} virtualenv=/opt/graphite virtualenv_site_packages=no
   with_items:
     - psycopg2
-    - django<1.7
-    - django-tagging 
+    - django
+    - django-tagging
     - python-memcached 
     - pytz 
     - pyparsing
@@ -77,11 +77,22 @@
 - name: install graphite
   command: ./bin/pip install ./graphite-web-{{ graphite.version }}/ chdir=/opt/graphite
 
+- name: graphite folder for local_settings
+  file:
+    path: /opt/graphite/webapp/graphite
+    state: directory
+
 - name: graphite conf
   template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
 
-- name: syncdb for graphite
-  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py syncdb --noinput --settings=graphite.settings
+- name: create init file for python
+  file:
+    path: /opt/graphite/webapp/graphite/__init__.py
+    state: touch
+    mode: 644
+
+- name: run migrate for graphite
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate --noinput --settings=graphite.local_settings
 
 - name: graphite log folder
   file: state=directory path=/opt/graphite/storage/log/webapp

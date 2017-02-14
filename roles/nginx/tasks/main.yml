@@ -8,15 +8,15 @@
   copy: src=epel.repo dest=/etc/yum.repos.d/epel_ansible.repo
   when: ansible_os_family == "RedHat"
 
-- name: Install the nginx packages 
+- name: Install the nginx packages for redhat/centos
   yum: name={{ item }} state=present
-  with_items: redhat_pkg
+  with_items: "{{ redhat_pkg }}"
   when: ansible_os_family == "RedHat"
 
-- name: Install the nginx packages 
+- name: Install the nginx packages for debian/ubuntu
   apt: name={{ item }} state=present update_cache=yes
-  with_items: ubuntu_pkg
-  environment: env
+  with_items: "{{ ubuntu_pkg }}"
+  environment: "{{ env }}"
   when: ansible_os_family == "Debian"
 
 - name: Create the directories for site specific configurations
