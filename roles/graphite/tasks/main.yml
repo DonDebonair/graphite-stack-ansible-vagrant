@@ -50,14 +50,26 @@
   template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
 
 - name: migrate auth for graphite
-  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate auth --settings=graphite.settings --noinput
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate auth --settings=graphite.settings --noinput
 
 - name: migrate the rest for graphite
-  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate --settings=graphite.settings --run-syncdb --noinput
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate --settings=graphite.settings --run-syncdb --noinput
 
 - name: collect static stuff
-  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py collectstatic --settings=graphite.settings --noinput
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py collectstatic --settings=graphite.settings --noinput
 
+- name: copy fixtures
+  copy:
+    src: users.json
+    dest: /tmp/users.json
+
+- name: load fixtures
+  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py loaddata /tmp/users.json --settings=graphite.settings
+
+- name: remove fixtures
+  file:
+    dest: /tmp/users.json
+    state: absent
 
 - name: graphite log folder
   file: state=directory path=/opt/graphite/storage/log/webapp

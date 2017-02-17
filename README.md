@@ -43,11 +43,7 @@ On production environments you will want to set the ``secret_key`` setting under
 
 ## Superuser
 
-To create a superuser, log in as root, or turn to root on your server, and issue the following command:
-
-```
-export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py createsuperuser --settings=graphite.settings
-```
+The playbook will automatically create a superuser for Graphite with credentials `admin / admin`. Don't forget to change those!
 
 ## Known issues / TODO
 
