@@ -1,0 +1,6 @@
+[program:statsdaemon]
+command=/opt/statsdaemon/statsdaemon-0.7.1.linux-amd64.go1.4.2/statsdaemon
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stopsignal=QUIT

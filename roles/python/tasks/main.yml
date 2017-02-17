@@ -19,3 +19,6 @@
 
 - name: install virtualenv
   pip: name=virtualenv
+
+- name: upgrade setuptools
+  pip: name=setuptools

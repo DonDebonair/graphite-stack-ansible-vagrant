@@ -24,7 +24,10 @@
   copy: src=supervisor-RedHat dest=/etc/rc.d/init.d/supervisord mode=0755 group=root owner=root
   when: ansible_os_family == "RedHat"
 
-- name: Enable and run service
+- name: Enable and run service on RedHat
   service: name=supervisord state=started enabled=yes
   when: ansible_os_family == "RedHat"
 
+- name: Enable and run service on Ubuntu/Debian
+  service: name=supervisor state=started enabled=yes
+  when: ansible_os_family == "Debian"

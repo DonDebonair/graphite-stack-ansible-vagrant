@@ -22,40 +22,18 @@
     path: /opt/graphite/
     state: directory
 
-- name: install graphite python deps and create virtualenv if needed
-  pip: name={{ item }} virtualenv=/opt/graphite virtualenv_site_packages=no
+- name: create virtualenv if needed, install graphite python deps and install graphite itself
+  pip: name={{ item }} virtualenv=/opt/graphite chdir=/opt/graphite virtualenv_site_packages=no
   with_items:
     - psycopg2
-    - django<1.7
-    - django-tagging 
-    - python-memcached 
-    - pytz 
-    - pyparsing
+    - scandir
     - gunicorn
-    - twisted
-    - cairocffi # Drop-in replacement for py2cairo. Can be installed inside virtualenv. See http://stackoverflow.com/questions/11491268/install-pycairo-in-virtualenv
+    - python-memcached
+    - https://github.com/graphite-project/whisper/tarball/master
+    - https://github.com/graphite-project/carbon/tarball/master
+    - https://github.com/graphite-project/graphite-web/tarball/master
 
-# WHISPER
-
-- name: whisper source
-  get_url: url=https://github.com/graphite-project/whisper/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/whisper-{{ graphite.version }}.tar.gz
-
-- name: unarchive source
-  command: tar -xvzf /opt/graphite/whisper-{{graphite.version}}.tar.gz chdir=/opt/graphite creates=/opt/graphite/whisper-{{ graphite.version }}
-
-- name: install whisper
-  command: ./bin/pip install ./whisper-{{ graphite.version }}/ chdir=/opt/graphite
-
-# CARBON
-
-- name: carbon source
-  get_url: url=https://github.com/graphite-project/carbon/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/carbon-{{ graphite.version }}.tar.gz
-
-- name: unarchive source
-  command: tar -xvzf /opt/graphite/carbon-{{graphite.version}}.tar.gz chdir=/opt/graphite creates=/opt/graphite/carbon-{{ graphite.version }}
-
-- name: install carbon
-  command: ./bin/pip install ./carbon-{{ graphite.version }}/ chdir=/opt/graphite
+# CARBON CONFIG
 
 - name: Configure carbon cache
   template: src=carbon.conf.j2 dest=/opt/graphite/conf/carbon.conf mode=0644
@@ -66,25 +44,29 @@
 - name: Configure carbon storage aggregation
   template: src=storage-aggregation.conf.j2 dest=/opt/graphite/conf/storage-aggregation.conf mode=0644
 
-# GRAPHITE WEBAPP
-
-- name: graphite source
-  get_url: url=https://github.com/graphite-project/graphite-web/archive/{{ graphite.version }}.tar.gz dest=/opt/graphite/graphite-web-{{ graphite.version }}.tar.gz
-
-- name: unarchive source
-  command: tar -xvzf graphite-web-{{ graphite.version }}.tar.gz chdir=/opt/graphite creates=/opt/graphite/graphite-web-{{ graphite.version }}
-
-- name: install graphite
-  command: ./bin/pip install ./graphite-web-{{ graphite.version }}/ chdir=/opt/graphite
+# GRAPHITE WEBAPP CONFIG
 
 - name: graphite conf
   template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
 
-- name: syncdb for graphite
-  shell: export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py syncdb --noinput --settings=graphite.settings
+- name: migrate auth for graphite
+  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate auth --settings=graphite.settings --noinput
+
+- name: migrate the rest for graphite
+  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py migrate --settings=graphite.settings --run-syncdb --noinput
+
+- name: collect static stuff
+  shell: export PYTHONPATH=/opt/graphite/lib/:/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/bin/django-admin.py collectstatic --settings=graphite.settings --noinput
+
 
 - name: graphite log folder
   file: state=directory path=/opt/graphite/storage/log/webapp
+
+- name: graphite wsgi
+  copy:
+    remote_src: true
+    src: /opt/graphite/conf/graphite.wsgi.example
+    dest: /opt/graphite/webapp/wsgi.py
 
 # SUPERVISOR
 
@@ -96,7 +78,12 @@
 # NGinx
 
 - name: Set file permissions
-  command: /bin/chown -R {{ nginx_user }}:{{ nginx_group }} /opt/graphite
+  file:
+    path: /opt/graphite
+    state: directory
+    recurse: true
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
 
 - name: Copy nginx configuration for graphite
   template: src=nginx-graphite.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner={{ nginx_user }} group={{ nginx_group }}

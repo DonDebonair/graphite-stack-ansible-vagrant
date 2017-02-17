@@ -1,5 +1,5 @@
 [program:gunicorn-graphite]
-command=/opt/graphite/bin/gunicorn_django -u {{ nginx_user }} -g {{ nginx_user }} -b 127.0.0.1:8080 --log-file=/opt/graphite/storage/log/webapp/gunicorn.log /opt/graphite/webapp/graphite/settings.py
+command=/opt/graphite/bin/gunicorn -b 127.0.0.1:8080 -w {{ graphite.workers }} -u {{ nginx_user }} -g {{ nginx_user }} --log-file=/opt/graphite/storage/log/webapp/gunicorn.log --pythonpath /opt/graphite/webapp/ wsgi:application
 process_name=%(program_name)s
 autostart=true
 autorestart=true

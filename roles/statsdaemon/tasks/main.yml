@@ -1,0 +1,19 @@
+- name: Prepare Statsdaemon directory
+  file: state=directory path=/opt/statsdaemon
+
+- name: Download Statsdaemon
+  get_url:
+    url: https://github.com/bitly/statsdaemon/releases/download/v0.7.1/statsdaemon-0.7.1.linux-amd64.go1.4.2.tar.gz
+    dest: "/opt/statsdaemon/statsdaemon-0.7.1.linux-amd64.go1.4.2.tar.gz"
+
+- name: Unpack statsdaemon
+  unarchive:
+    src: "/opt/statsdaemon/statsdaemon-0.7.1.linux-amd64.go1.4.2.tar.gz"
+    dest: "/opt/statsdaemon"
+    copy: no
+    creates: "/opt/statsdaemon/statsdaemon-0.7.1.linux-amd64.go1.4.2"
+
+- name: Copy supervisor configuration for statsd
+  template: src=supervisor-statsdaemon.conf.j2 dest=/etc/supervisor/conf.d/statsdaemon.conf
+  notify: 
+    - reload supervisor

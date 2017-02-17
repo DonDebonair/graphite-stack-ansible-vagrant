@@ -1,20 +1,12 @@
 server {
     listen 80;
-    server_name {{ graphite.server }};
+    server_name {{ graphite.vhost }};
 
     client_max_body_size 64M;
     keepalive_timeout 5;
-    
-    # path for static files
-    root /opt/graphite/webapp/content;
 
-    location /static {
-      alias /opt/graphite/webapp/content;
-    }
-
-    location /media/ {
-      # this changes depending on your python version
-      root /opt/graphite/lib/python2.7/site-packages/django/contrib/admin;
+    location /static/ {
+        alias /opt/graphite/static/;
     }
 
     location / {

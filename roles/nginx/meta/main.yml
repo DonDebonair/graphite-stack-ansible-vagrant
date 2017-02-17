@@ -1,26 +1,33 @@
 ---
 galaxy_info:
-  author: "Benno Joy"
-  company: AnsibleWorks
+  author: "DAUPHANT Julien"
   license: BSD
-  min_ansible_version: 1.4
+  min_ansible_version: 2.0
   platforms:
    - name: EL
      versions:
-      - 5
-      - 6
+      - all
    - name: Fedora
      versions:
-      - 16
-      - 17
-      - 18
+      - all
+   - name: opensuse
+     versions:
+      - all
    - name: Ubuntu
      versions:
-      - precise
-      - quantal
-      - raring
-      - saucy
+      - all
+   - name: Debian
+     versions:
+      - all
+   - name: FreeBSD
+     versions:
+      - 10.0
+      - 10.1
+      - 10.2
+      - 10.3
+      - 11.0
   categories:
    - web
+allow_duplicates: yes
 dependencies: []
-  
+

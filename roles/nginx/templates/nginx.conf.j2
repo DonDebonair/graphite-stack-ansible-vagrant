@@ -1,31 +1,50 @@
 #{{ ansible_managed }}
-{% if ansible_os_family == 'RedHat' %} 
-user              nginx;
-{% endif %}
-{% if ansible_os_family == 'Debian' %} 
-user              www-data;
+user              {{ nginx_user }}  {{ nginx_group }};
+
+worker_processes  {{ nginx_worker_processes }};
+
+{% if nginx_pid_file %}
+pid        {{ nginx_pid_file }};
 {% endif %}
 
-worker_processes  {{ ansible_processor_count }};
-pid        /var/run/nginx.pid;
+worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
 
+{% if nginx_extra_root_params is defined and nginx_extra_root_params is iterable %}
+{% for line in nginx_extra_root_params %}
+{{ line }};
+{% endfor %}
+{% endif %}
 
 events {
-    worker_connections  {{ nginx_max_clients }};
+{% for v in nginx_events_params %}
+        {{ v }};
+{% endfor %}
 }
 
 
 http {
 
-        include /etc/nginx/mime.types;
+        include {{ nginx_conf_dir }}/mime.types;
         default_type application/octet-stream;
-{% for k,v in nginx_http_params.iteritems() %}
-        {{ k }}  {{ v }};
+{% for v in nginx_http_params %}
+        {{ v }};
 {% endfor %}
 
-        gzip on;
-        gzip_disable "msie6";
-
-        include /etc/nginx/conf.d/*.conf;
-        include /etc/nginx/sites-enabled/*;
+        include {{ nginx_conf_dir }}/conf.d/*.conf;
+        include {{ nginx_conf_dir }}/sites-enabled/*;
 }
+
+{% if nginx_official_repo_mainline %}
+stream {
+
+{% for v in nginx_stream_params %}
+        {{ v }};
+{% endfor %}
+
+        include {{ nginx_conf_dir }}/conf.d/stream/*.conf;
+}
+{% endif %}
+
+{% if nginx_daemon_mode == "off" %}
+daemon off;
+{% endif %}

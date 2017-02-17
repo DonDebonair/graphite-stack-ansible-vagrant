@@ -1,12 +1,19 @@
 - hosts: all
-  sudo: True
+  gather_facts: False
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python) || yum install -y python2
+      register: output
+      changed_when: output.stdout != ""
+    - setup: # aka gather_facts
+  become: True
   vars:
     graphite:
       version: master
       timezone: Europe/Paris
       workers: 4
       host: 0.0.0.0
-      server: graphite.local
+      vhost: graphite.dev
       secret_key: 'ob3sow^ik#4q(k5*tgw&6j+osyr^@0jus$yd+-#^&^d#%yim1!'
     carbon:
       host: 0.0.0.0
@@ -20,9 +27,7 @@
     - python
     - supervisor
     - role: nginx
-      nginx_sites: none
+      nginx_sites: {}
     - postgres
     - graphite
-    - nodejs
-    - statsd
-
+    - statsdaemon

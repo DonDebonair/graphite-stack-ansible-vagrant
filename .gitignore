@@ -1,3 +1,6 @@
 ### Vagrant ###
 .vagrant/
 vagrant_ansible_inventory*
+
+### Ansible ###
+*.retry
