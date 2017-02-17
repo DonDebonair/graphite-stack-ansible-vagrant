@@ -1,6 +1,6 @@
-# Graphite & StatsD with Ansible
+# Graphite, StatsD & Grafana with Ansible
 
-This playbook makes it really easy to setup [Graphite](http://graphite.readthedocs.org/en/latest/) and [StatsD](https://github.com/etsy/statsd/) on a server (VPS or Dedicated). You can also optionally install it on a Virtual Machine using Vagrant so you can play around with it. It uses [Ansible](http://www.ansible.com/), a great configuration management tool written in Python, to automatically install the applications and all dependencies and configure everything to work optimally.
+This playbook makes it really easy to setup [Graphite](http://graphite.readthedocs.org/en/latest/), [StatsD(aemon)](https://github.com/bitly/statsdaemon) and [Grafana](http://grafana.org/) on a server (VPS or Dedicated). You can also optionally install it on a Virtual Machine using Vagrant so you can play around with it. It uses [Ansible](http://www.ansible.com/), a great configuration management tool written in Python, to automatically install the applications and all dependencies and configure everything to work optimally.
 
 What gets installed:
 
@@ -13,6 +13,7 @@ What gets installed:
 	* [Whisper](https://github.com/graphite-project/whisper)
 	* [The Graphite webapp](https://github.com/graphite-project/graphite-web)
 * [StatsDaemon](https://github.com/bitly/statsdaemon) ([StatsD](https://github.com/etsy/statsd) implementation in Go)
+* [Grafana](http://grafana.org/)
 
 ## Let's do this!
 

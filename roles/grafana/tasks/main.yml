@@ -1,0 +1,23 @@
+- apt_repository:
+    repo: deb https://packagecloud.io/grafana/stable/debian/ jessie main
+    state: present
+
+- apt_key:
+    url: "https://packagecloud.io/gpg.key"
+    state: present
+
+- name: Update repositories cache and install Grafana package
+  apt:
+    name: grafana
+    update_cache: yes
+
+- name: Enable and run Grafana
+  service: name=grafana-server state=started enabled=yes
+
+- name: Copy nginx configuration for grafana
+  template: src=nginx-grafana.conf.j2 dest=/etc/nginx/sites-available/grafana.conf owner={{ nginx_user }} group={{ nginx_group }}
+
+- name: Link nginx configuration for grafana
+  file: src=/etc/nginx/sites-available/grafana.conf dest=/etc/nginx/sites-enabled/grafana.conf state=link owner={{ nginx_user }} group={{ nginx_group }}
+  notify:
+    - restart nginx

@@ -13,7 +13,7 @@
       timezone: Europe/Paris
       workers: 4
       host: 0.0.0.0
-      vhost: graphite.dev
+      vhost: graphite.monitoring.dev
       secret_key: 'ob3sow^ik#4q(k5*tgw&6j+osyr^@0jus$yd+-#^&^d#%yim1!'
     carbon:
       host: 0.0.0.0
@@ -22,6 +22,8 @@
       name: graphite
       user: graphite
       password: graphite
+    grafana:
+      vhost: grafana.monitoring.dev
   roles:
     - common
     - python
@@ -31,3 +33,4 @@
     - postgres
     - graphite
     - statsdaemon
+    - grafana
