@@ -30,11 +30,11 @@ $ vagrant up
 
 ## Different OSes
 
-By default, the Vagrant box runs Ubuntu 16.04, but the playbook supports Debian 8 ~~and CentOS 6.4 as well!~~ (currently untested) To try those out, uncomment the appropriate lines in the Vagrantfile and comment out the Ubuntu lines.
+By default, the Vagrant box runs Ubuntu 16.04, but the playbook supports Debian 8 ~~and CentOS 7 as well!~~ (currently not working due to network issue) To try those out, uncomment the appropriate lines in the Vagrantfile and comment out the Ubuntu lines.
 
 ## Using the playbook standalone
 
-You can of course also use the playbook without Vagrant. In that case you must provide your own inventory file specifying the host on which to install Sentry. The playbook has been tested on Ubuntu 16.04, Debian 8 ~~and CentOS 6.4~~. Other flavors of Linux might work as well.
+You can of course also use the playbook without Vagrant. In that case you must provide your own inventory file specifying the host on which to install Sentry. The playbook has been tested on Ubuntu 16.04, Debian 8 ~~and CentOS 7~~. Other flavors of Linux might work as well.
 
 ## Secret key
 
@@ -51,7 +51,7 @@ export PYTHONPATH=/opt/graphite/webapp/; /opt/graphite/bin/python /opt/graphite/
 ## Known issues / TODO
 
 * This hasn't been tested on other Providers than VirtualBox yet
-* On CentOS, the firewall is completely closed by default (at least on the box I tried it with). So you have to manually open the relevant port (80) using `iptables`, or if you're not concerned about security (because you're running it locally through Vagrant), you can always flush the firewall with `iptables -F`.
+* Currently, CentOS 7 doesn't seem to be working (at least not with Vagrant). No network connections are possible to anything running on the VM. I'm not sure why...
 
 ## Contribute
 

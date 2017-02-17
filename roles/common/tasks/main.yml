@@ -2,16 +2,8 @@
   apt: update_cache=yes
   when: ansible_os_family == "Debian"
 
-- name: get epel-repo rpm RHEL6
-  get_url: dest=/tmp/epel-release.rpm  url=http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-  when: ansible_os_family == 'RedHat' and ansible_distribution_version|int == 6
-
-- name: get epel-repo rpm RHEL5
-  get_url: dest=/tmp/epel-release.rpm  url=http://download.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm
-  when: ansible_os_family == 'RedHat' and ansible_distribution_version|int == 5
-
 - name: install epel-repo rpm
-  yum: pkg=/tmp/epel-release.rpm state=installed
+  yum: name=epel-release state=installed
   when: ansible_os_family == 'RedHat'
 
 - name: install common packages debian/ubuntu
@@ -21,11 +13,11 @@
     - git
   when: ansible_os_family == "Debian"
 
-# @development is a groupinstall, see https://coderwall.com/p/k6goya
-- name: install common packages redhat/centos
-  yum: pkg={{ item }} state=latest
-  with_items:
-    - '@development'
-    - git
+- name: install git redhat/centos
+  yum: name=git state=latest
   when: ansible_os_family == "RedHat"
 
+
+- name: install development tools redhat/centos
+  yum: name='@Development tools' state=present
+  when: ansible_os_family == "RedHat"
