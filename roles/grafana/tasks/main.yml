@@ -11,6 +11,9 @@
     name: grafana
     update_cache: yes
 
+- name: Copy grafana configuration
+  template: src=grafana.ini.j2 dest=/etc/grafana/grafana.ini owner=root group=grafana
+
 - name: Enable and run Grafana
   service: name=grafana-server state=started enabled=yes
 
