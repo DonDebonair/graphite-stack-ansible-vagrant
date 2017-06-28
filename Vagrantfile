@@ -6,7 +6,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # graphite.vm.box = "centos/7"
     # graphite.vm.box = "debian/jessie64"
     monitoring.vm.box = "ubuntu/xenial64"
-    monitoring.vm.network :private_network, ip: "172.0.0.10"
+    monitoring.vm.network :private_network, ip: "192.168.50.4"
 
     monitoring.vm.provision "ansible_local" do |ansible| 
       ansible.playbook = "monitoring.yml"
