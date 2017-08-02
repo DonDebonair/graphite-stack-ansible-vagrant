@@ -31,11 +31,11 @@ $ vagrant up
 
 ## Different OSes
 
-By default, the Vagrant box runs Ubuntu 16.04, but the playbook supports Debian 8 ~~and CentOS 7 as well!~~ (currently not working due to network issue) To try those out, uncomment the appropriate lines in the Vagrantfile and comment out the Ubuntu lines.
+By default, the Vagrant box runs Ubuntu 16.04, but the playbook supports Debian 8 and CentOS 7 as well! To try those out, uncomment the appropriate lines in the Vagrantfile and comment out the Ubuntu lines.
 
 ## Using the playbook standalone
 
-You can of course also use the playbook without Vagrant. In that case you must provide your own inventory file specifying the host on which to install Sentry. The playbook has been tested on Ubuntu 16.04, Debian 8 ~~and CentOS 7~~. Other flavors of Linux might work as well.
+You can of course also use the playbook without Vagrant. In that case you must provide your own inventory file specifying the host on which to install Sentry. The playbook has been tested on Ubuntu 16.04, Debian 8 and CentOS 7. Other flavors of Linux might work as well.
 
 ## Secret key
 
@@ -48,7 +48,6 @@ The playbook will automatically create a superuser for Graphite with credentials
 ## Known issues / TODO
 
 * This hasn't been tested on other Providers than VirtualBox yet
-* Currently, CentOS 7 doesn't seem to be working (at least not with Vagrant). No network connections are possible to anything running on the VM. I'm not sure why...
 
 ## Contribute
 
