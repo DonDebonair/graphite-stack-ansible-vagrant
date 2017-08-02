@@ -15,3 +15,10 @@
 
 - name: Set SELinux boolean to allow nginx to set rlimit
   seboolean: name=httpd_setrlimit state=yes persistent=yes
+
+- name: Set SELinux boolean to allow nginx to proxy on redhat/centos
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+  when: ansible_os_family == "RedHat"
