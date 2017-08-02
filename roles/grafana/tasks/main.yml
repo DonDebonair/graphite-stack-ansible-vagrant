@@ -1,15 +1,26 @@
-- apt_repository:
+- name: add Apt repository debian/ubuntu
+  apt_repository:
     repo: deb https://packagecloud.io/grafana/stable/debian/ jessie main
     state: present
+  when: ansible_os_family == "Debian"
 
-- apt_key:
+- name: add signing key debian/ubuntu
+  apt_key:
     url: "https://packagecloud.io/gpg.key"
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: Update repositories cache and install Grafana package
+- name: update repositories cache and install Grafana package debian/ubuntu
   apt:
     name: grafana
     update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: install grafana redhat/centos
+  yum:
+    name: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.4.2-1.x86_64.rpm
+    state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Copy grafana configuration
   template: src=grafana.ini.j2 dest=/etc/grafana/grafana.ini owner=root group=grafana
